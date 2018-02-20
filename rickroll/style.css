@@ -1,0 +1,19 @@
+body {
+text-align: center;
+background-color: black;
+}
+#title {
+	text-align: center;
+	font-family: : "Arial";
+	color: white;
+	font-size: 30px;
+}
+
+#lyrics{
+	font-size: 20px;
+	font-family: "Comic Sans MS";
+	color: yellow;
+	padding: 5px;
+	border: dashed;
+	border-color: red;
+}
