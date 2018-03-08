@@ -8,6 +8,7 @@ var myOptions = {
 };
 var map;
 var marker;
+var me_marker;
 var infowindow = new google.maps.InfoWindow();
 
 function init() {
@@ -42,35 +43,53 @@ function send()
 	request.onreadystatechange = function() {
 		// Request is done and got a response back
 		if (request.readyState == 4 && request.status == 200) {
-			outputDiv = document.getElementById("passengers");
-			
+
 			// Step 5: Work with the response data
 			theString = request.responseText;				
 
 			// Step 5A: Parse the responseText to JavaScript objects
 			passengers = JSON.parse(theString);
-			outputString = "";
-			for (count = 0; count < passengers["passengers"].length; count++) {
-				outputString += "<p>" + "username: " + passengers["passengers"][count]["username"]+"</p>";
-				outputString += "<p>" + "id: " + passengers["passengers"][count]["_id"]+"</p>";
-				outputString += "<p>" + "lattitude: " + passengers["passengers"][count]["lat"]+"</p>";
-				outputString += "<p>" + "longitude: " + passengers["passengers"][count]["lng"]+"</p>";
-				outputString += "<p>" + "created at: " + passengers["passengers"][count]["created_at"]+"</p>";
-				outputString += "<p>"+"------------------------------------------------"+"</p>";
-
-				marker = new google.maps.Marker({
-					position: {lat: passengers["passengers"][count]["lat"], lng: passengers["passengers"][count]["lng"]},
-					title: passengers["passengers"][count]["username"]
-				});
-				marker.setMap(map);
-					
-				// Open info window on click of marker
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(marker.title);
-					infowindow.open(map, marker);
-				});
+			if (passengers.hasOwnProperty("passengers"))
+			{
+				for (count = 0; count < passengers["passengers"].length; count++) {
+					marker = new google.maps.Marker({
+						position: new google.maps.LatLng(passengers["passengers"][count]["lat"], passengers["passengers"][count]["lng"]),
+						map: map,
+						title: passengers["passengers"][count]["username"],
+						icon: 'taxi_passanger.png'
+					});	
+					// Open info window on click of marker
+					google.maps.event.addListener(marker, 'click', (function(marker, count) {
+				        return function() {
+				          infowindow.setContent("username: " + marker.title + " distance: " + 
+				          	calc_distance(myLat,myLng,passengers["passengers"][count]["lat"], passengers["passengers"][count]["lng"]));
+				          infowindow.open(map, marker);
+				        }
+			      	})(marker, count));
+				}
 			}
-			outputDiv.innerHTML = outputString;
+			if (passengers.hasOwnProperty("vehicles"))
+			{
+				for (count = 0; count < passengers["vehicles"].length; count++) {
+					marker = new google.maps.Marker({
+						position: new google.maps.LatLng(passengers["vehicles"][count]["lat"], passengers["vehicles"][count]["lng"]),
+						map: map,
+						title: passengers["vehicles"][count]["username"],
+						icon: 'car.png'
+					});	
+					// Open info window on click of marker
+					google.maps.event.addListener(marker, 'click', (function(marker, count) {
+				        return function() {
+				          infowindow.setContent(marker.title);
+				          infowindow.open(map, marker);
+				        }
+			      	})(marker, count));
+				}	
+
+			}
+			
+			
+		
 
 		}
 	};
@@ -86,15 +105,36 @@ function renderMap() {
 	map.panTo(me);
 	
 	// Create a marker
-	marker = new google.maps.Marker({
+	me_marker = new google.maps.Marker({
 		position: me,
-		title: "Here I Am!"
+		title: "DAu0hb2i5T",
+		icon: 'me.png'
 	});
-	marker.setMap(map);
+	me_marker.setMap(map);
 		
 	// Open info window on click of marker
-	google.maps.event.addListener(marker, 'click', function() {
-		infowindow.setContent(marker.title);
-		infowindow.open(map, marker);
+	google.maps.event.addListener(me_marker, 'click', function() {
+		infowindow.setContent(me_marker.title);
+		infowindow.open(map, me_marker);
 	});
+}
+
+function calc_distance(lat1, lon1, lat2, lon2)
+{
+	Number.prototype.toRadians = function() {
+   	return this * Math.PI / 180;
+	}
+	var R = 6371e3; // metres
+	var angle1 = lat1.toRadians();
+	var angle2 = lat2.toRadians();
+	var delta_angle = (lat2-lat1).toRadians();
+	var delta_lon_angle = (lon2-lon1).toRadians();
+
+	var a = Math.sin(delta_angle/2) * Math.sin(delta_angle/2) +
+	        Math.cos(angle1) * Math.cos(angle2) *
+	        Math.sin(delta_lon_angle/2) * Math.sin(delta_lon_angle/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	var d = R * c;
+	return d/1609.34;
 }
