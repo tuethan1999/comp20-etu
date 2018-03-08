@@ -2,7 +2,7 @@ var myLat = 0;
 var myLng = 0;
 var me = new google.maps.LatLng(myLat, myLng);
 var myOptions = {
-	zoom: 13, // The larger the zoom number, the bigger the zoom
+	zoom: 18, // The larger the zoom number, the bigger the zoom
 	center: me,
 	mapTypeId: google.maps.MapTypeId.ROADMAP
 };
@@ -10,6 +10,7 @@ var map;
 var marker;
 var me_marker;
 var infowindow = new google.maps.InfoWindow();
+var closest = 99999999;
 
 function init() {
 	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -61,11 +62,16 @@ function send()
 					// Open info window on click of marker
 					google.maps.event.addListener(marker, 'click', (function(marker, count) {
 				        return function() {
-				          infowindow.setContent("username: " + marker.title + " distance: " + 
+				          infowindow.setContent("username: " + marker.title + " distance(miles): " + 
 				          	calc_distance(myLat,myLng,passengers["passengers"][count]["lat"], passengers["passengers"][count]["lng"]));
 				          infowindow.open(map, marker);
 				        }
 			      	})(marker, count));
+
+					if(calc_distance(myLat,myLng,passengers["passengers"][count]["lat"], passengers["passengers"][count]["lng"])<closest)
+					{
+						closest = calc_distance(myLat,myLng,passengers["passengers"][count]["lat"], passengers["passengers"][count]["lng"]);
+					}
 				}
 			}
 			if (passengers.hasOwnProperty("vehicles"))
@@ -80,17 +86,19 @@ function send()
 					// Open info window on click of marker
 					google.maps.event.addListener(marker, 'click', (function(marker, count) {
 				        return function() {
-				          infowindow.setContent(marker.title);
+				          infowindow.setContent("username: " + marker.title + " distance(miles): " + 
+				          	calc_distance(myLat,myLng,passengers["vehicles"][count]["lat"], passengers["vehicles"][count]["lng"]));
 				          infowindow.open(map, marker);
 				        }
 			      	})(marker, count));
+
+			      	if(calc_distance(myLat,myLng,passengers["vehicles"][count]["lat"], passengers["vehicles"][count]["lng"])<closest)
+					{
+						closest = calc_distance(myLat,myLng,passengers["vehicles"][count]["lat"], passengers["vehicles"][count]["lng"]);
+					}
 				}	
 
 			}
-			
-			
-		
-
 		}
 	};
 
@@ -114,7 +122,7 @@ function renderMap() {
 		
 	// Open info window on click of marker
 	google.maps.event.addListener(me_marker, 'click', function() {
-		infowindow.setContent(me_marker.title);
+		infowindow.setContent(me_marker.title + " nearest person distance(miles): " + closest);
 		infowindow.open(map, me_marker);
 	});
 }
