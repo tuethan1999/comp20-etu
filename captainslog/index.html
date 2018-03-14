@@ -9,25 +9,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
     $(document).ready(function(){
+        reload();
         $("input").change(function(){
             store();
         });
     });
 
     function reload() {
-        output = "";
-        for (key in localStorage) {     
-            output = output + "<p>" + key + " - " + localStorage[key] + "</p>\n";
+        var messages = JSON.parse(localStorage.getItem("messages"));
+        $("#log").empty();
+        theKeys = Object.keys(messages);
+        for (i = theKeys.length-1; i >=0 ; i--) {
+            $("#log").append("<p>"+ messages[theKeys[i]]+ "</p>\n");
         }
-        $("#log").html(output);
     }
     
     function store() {
-        txt = $("input").val();
-        localStorage[Date()] =  txt;
-        //var words = JSON.parse(localStorage.getItem("words"));
-        //words.push("hello");
-        //localStorage.setItem("words", JSON.stringify(words));
+        txt = Date() + " - " + $("input").val();
+        if(localStorage.length == 0)
+            localStorage.setItem("messages", JSON.stringify([]));
+        var messages = JSON.parse(localStorage.getItem("messages"));
+        messages.push(txt);
+        localStorage.setItem("messages", JSON.stringify(messages));
         reload();
     }    
 </script>
