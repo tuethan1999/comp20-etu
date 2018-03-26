@@ -16,6 +16,8 @@
     });
 
     function reload() {
+        if (localStorage.getItem("messages") === null)
+            localStorage.setItem("messages", JSON.stringify([]));
         var messages = JSON.parse(localStorage.getItem("messages"));
         $("#log").empty();
         theKeys = Object.keys(messages);
@@ -26,8 +28,6 @@
     
     function store() {
         txt = Date() + " - " + $("input").val();
-        if(localStorage.length == 0)
-            localStorage.setItem("messages", JSON.stringify([]));
         var messages = JSON.parse(localStorage.getItem("messages"));
         messages.push(txt);
         localStorage.setItem("messages", JSON.stringify(messages));
