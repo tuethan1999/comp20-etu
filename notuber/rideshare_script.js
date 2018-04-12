@@ -34,7 +34,7 @@ function send()
 {
 	// Step 1: Create instance of XMLHttpRequest
 	var request = new XMLHttpRequest();
-	url = "https://jordan-marsh.herokuapp.com/rides";
+	url = "https://safe-everglades-38934.herokuapp.com/rides";
 	params = "username=DAu0hb2i5T&lat=" + myLat + "&lng=" + myLng;
 	// Step 2: Set up an HTTP request
 	request.open("POST", url, true);
