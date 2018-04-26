@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Home Page</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		</head>
+
+	<body>
+		<div id="header">
+			<h1>Assignment 4</h1>
+			<h2>Security</h2>
+		</div>
+		<div class="peeps" ="peeps">
+			<h1> Introduction </h1>
+			<p>The product is a ride server similar to uber. Theres a mongodb/express/heroku/nodejs server that accepts</p>
+			<p> a post to /rides a get to / and a get to /vehicles.json with a query called username</p>
+			<p> I was hired to try to find as many security and privacy problems as I can </p>
+			<h1> Methodology </h1>
+			<p> I tried XSS cross site scripting via curl</p>
+			<p> The second thing I did was look at the source code for the server</p>
+			<p> Then I tried NOSQL injections by issuing GET requests from my browser to /vehicles.json </p>
+			<p> Then I tried putting [$ne] with my username query </p>
+			<p> Then I tried directly connecting to the mongo database </p>
+
+			<h1> Abstract of Findings </h1>
+			<p> I could not break it. Code is secure. </p>
+			<h1> Issues</h1>
+			<p> I could not break the code because the server checked all the data I sent it for unwanted data types</p>
+			<p><img src="validation.png"></p>
+			<p> The server did not check the data sent for GET /vehicles.json. However, since all the server does with that information is issue a find request in the database, any unwanted data would result in {} being sent back</p>
+			<p><img src="vehicle.png"></p>
+			<p> When I tried to connect to the mongo database without a valid username/password, the database would not let</p>
+			<p> me do anything. I tried to show collections, insert items, both were denied. </p>
+			<p> When I connected to the mongo database with a valid username/password, I was able to do anything to it, including putting malicious scripts inside</p>
+			<p> However, in order to get this information they would have to hack Heroku so this security flaw wasn't really much of a flaw</p>
+			<p><img src="hacked.png"></p>
+			<p> Something that was intentional but dangerous is cross site scripting. Any website has acccess to all information of the server. This is something that allows notuber to work but also allows any website to access the information that notuber can access.</p>
+			<h1> Conclusion </h1>
+			<p> Data validation is key to security. GET /vehicle.json should validate the querystring</p>
+			<h1> References </h1>
+			<p> 1. "MongoDB: Preventing common vulnerabilities in the MEAN stack" (2017). Link: https://www.synopsys.com/blogs/software-security/preventing-common-mean-stack-vulnerabilities/</p>
+			<p> 2. "Hacking NodeJS and MongoDB" (2014). Link: https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html</p>
+
+		</div>
+	</body>
+</html>
