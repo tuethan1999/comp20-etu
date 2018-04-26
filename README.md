@@ -1,0 +1,5 @@
+The purpose of this git repository is to make all projects I have worked on in Comp 20 available to others. People will be able to see and access my projects if I let them.
+My favorite Assignment was making the ride server in assignment 3. That is something I have never done before, and It's crazy to think that I can understand how a program like uber works behind the scenes
+I think that I have grown a lot. I've learned to learn by myself. 
+I feel like I have learned the important fundamentals of web programming. The most important of which is how to use APIs and use get and post requests. I can use it to connect to google maps, or crypto currency exchanges or to twitter.
+Now that the course is over, I would really like to know how to make npm packages/libraries. I've looked at the source code for some. It almost looks like they create classes.  
